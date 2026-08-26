@@ -64,25 +64,20 @@ menuHomeBtn.addEventListener('click', () => {
 });
 
 function buildMenuStopList() {
-  const categories = [
-    { key: 'ecology',   label: 'Ecology' },
-    { key: 'history',   label: 'History' },
-    { key: 'future',    label: 'Clear Creek Present & Future' },
-    { key: 'hydrology', label: 'Hydrology' }
-  ];
-
-  categories.forEach(cat => {
-    const stops = TOUR_STOPS.filter(s => s.category === cat.key);
+  // Category order and labels come straight from CATEGORIES (defined in
+  // js/tour-data.js) — there is no separate list to keep in sync here.
+  // Add a new category in tour-data.js and it will automatically appear
+  // in this menu, in the order it's defined there.
+  Object.entries(CATEGORIES).forEach(([key, catInfo]) => {
+    const stops = TOUR_STOPS.filter(s => s.category === key);
     if (!stops.length) return;
-
-    const catInfo = CATEGORIES[cat.key];
 
     // Category heading
     const heading = document.createElement('li');
     heading.className = 'menu-category-heading';
     heading.innerHTML = `
       <span class="menu-cat-dot" style="background:${catInfo.color}"></span>
-      ${cat.label}
+      ${catInfo.label}
     `;
     menuList.appendChild(heading);
 
@@ -134,7 +129,11 @@ function initMap() {
     maxZoom: 19
   }).addTo(map);
 
-  // Trail GeoJSON
+  // Trail path (drawn as a white halo + blue line so it reads clearly over
+  // the basemap). If this fails to load — bad connection, missing file,
+  // etc. — the map still works and stop markers still appear; we just
+  // can't draw the trail line itself, so let the visitor know rather than
+  // failing silently.
   fetch('assets/trail.json')
     .then(res => res.json())
     .then(data => {
@@ -145,7 +144,10 @@ function initMap() {
         style: { color: '#006596', weight: 3, opacity: 1, lineCap: 'round', lineJoin: 'round' }
       }).addTo(map);
     })
-    .catch(err => console.warn('Trail GeoJSON failed to load:', err));
+    .catch(err => {
+      console.warn('Trail GeoJSON failed to load:', err);
+      showToast('Trail path unavailable — stop markers will still work.');
+    });
 
   // Add legend
   addLegend();
