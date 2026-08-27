@@ -124,6 +124,19 @@
             <span class="menu-item-label" style="color: #748d39; font-weight:600">Bird Sightings</span>
           </button>
         </li>
+        <li>
+          <!-- External link, not a JS-driven panel like the items above — opens the
+               GPC volunteer/community page in a new tab. rel="noopener" is a
+               security best practice for target="_blank" links. -->
+          <a class="menu-item" id="menu-getinvolved-btn"
+             href="https://greatpeninsula.org/what-we-do/community-engagement/volunteer-opportunities/"
+             target="_blank" rel="noopener">
+            <span class="menu-item-icon-simple" style="color: #eb6c39">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.5 4.04 3 5.5l7 7Z"/></svg>
+            </span>
+            <span class="menu-item-label" style="color: #eb6c39; font-weight:600">Get Involved</span>
+          </a>
+        </li>
         <li class="menu-divider"></li>
         <!-- Stop items injected by JS -->
       </ul>
@@ -205,6 +218,10 @@
        That is the file to edit to add/change a stop, photo, or video —
        see HANDOFF.md for step-by-step instructions. -->
   <script src="js/tour-data.js"></script>
+
+  <!-- Trail amenities (parking/trailheads, restrooms, kiosks) — see
+       js/points-data.js to add/change one. -->
+  <script src="js/points-data.js"></script>
 
   <!-- App logic -->
   <script src="js/app.js"></script>

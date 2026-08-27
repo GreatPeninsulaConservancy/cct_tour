@@ -154,22 +154,61 @@ function initMap() {
 
   // Add markers
   TOUR_STOPS.forEach(stop => addStopMarker(stop));
+  POINTS_OF_INTEREST.forEach(point => addPOIMarker(point));
 
   map.on('click', hidePanel);
   buildMenuStopList();
 }
 
 // ---------- Legend ----------
+// One combined, collapsible legend covering both the narrative tour-stop
+// categories (from CATEGORIES) and the trail amenities (from POI_TYPES).
+// Built entirely from those two objects, so a new category or amenity
+// type added there shows up here automatically — nothing to update in
+// this function itself.
 function addLegend() {
   const legend = L.control({ position: 'bottomright' });
   legend.onAdd = () => {
     const div = L.DomUtil.create('div', 'map-legend');
-    div.innerHTML = Object.entries(CATEGORIES).map(([key, cat]) => `
+
+    // Without this, a click on the toggle button below would bubble up to
+    // the map and fire map.on('click', hidePanel) — closing whatever stop
+    // panel might be open just from someone collapsing the legend.
+    L.DomEvent.disableClickPropagation(div);
+
+    const categoryItems = Object.entries(CATEGORIES).map(([key, cat]) => `
       <div class="legend-item">
         <span class="legend-dot" style="background:${cat.color}">${cat.icon}</span>
         <span class="legend-label">${cat.label}</span>
       </div>
     `).join('');
+
+    const poiItems = Object.entries(POI_TYPES).map(([key, poi]) => `
+      <div class="legend-item">
+        <span class="legend-dot-circle" style="color:${poi.color}">${poi.icon}</span>
+        <span class="legend-label">${poi.label}</span>
+      </div>
+    `).join('');
+
+    div.innerHTML = `
+      <button class="legend-toggle" aria-expanded="true">
+        <span class="legend-toggle-label">Map Legend</span>
+        <svg class="legend-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="legend-body">
+        ${categoryItems}
+        <div class="legend-divider"></div>
+        <div class="legend-section-label">Trail Amenities</div>
+        ${poiItems}
+      </div>
+    `;
+
+    const toggleBtn = div.querySelector('.legend-toggle');
+    toggleBtn.addEventListener('click', () => {
+      const isCollapsed = div.classList.toggle('collapsed');
+      toggleBtn.setAttribute('aria-expanded', String(!isCollapsed));
+    });
+
     return div;
   };
   legend.addTo(map);
@@ -199,6 +238,36 @@ function addStopMarker(stop) {
     });
 
   return marker;
+}
+
+// ---------- Amenity (POI) Marker ----------
+// Amenities (parking/trailheads, restrooms, kiosks) are quick-reference
+// points, not narrative stops — so unlike addStopMarker above, these use
+// Leaflet's built-in popup (a simple name + optional note) rather than
+// opening the full slide-up stop detail panel.
+function addPOIMarker(point) {
+  const poi = POI_TYPES[point.type];
+  if (!poi) {
+    console.warn(`Unknown POI type "${point.type}" for point "${point.name}" — skipping. Check POI_TYPES in js/points-data.js.`);
+    return;
+  }
+
+  const icon = L.divIcon({
+    className: 'poi-marker',
+    html: `<div class="poi-marker-inner" style="color:${poi.color}">${poi.icon}</div>`,
+    iconSize: [26, 26],
+    iconAnchor: [13, 13],
+    popupAnchor: [0, -14]
+  });
+
+  const popupContent = point.info
+    ? `<strong>${point.name}</strong><br>${point.info}`
+    : `<strong>${point.name}</strong>`;
+
+  return L.marker([point.lat, point.lng], { icon })
+    .addTo(map)
+    .bindPopup(popupContent, { maxWidth: 240 })
+    .on('click', (e) => L.DomEvent.stopPropagation(e));
 }
 
 // ---------- Stop Panel ----------

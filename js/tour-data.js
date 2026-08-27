@@ -450,7 +450,7 @@ const TOUR_STOPS = [
     body: `
       <p>You've reached the northern end of the Clear Creek Trail at the boundary of <strong>Petersen Farm</strong>, a <strong>142-acre</strong> working farm with history stretching to the 1880s. <strong>Gerald and Dorothy Petersen</strong> purchased the property in <strong>1948</strong>, ran a successful dairy and beef operation, and were named <strong>Kitsap County's Conservation Farmers of the Year</strong> in 1956.</p>
       <p><strong>Great Peninsula Conservancy</strong> purchased Petersen Farm in <strong>2025</strong> to prevent development and keep it in agricultural use. The farm borders <strong>3,000 feet</strong> of salmon-bearing Clear Creek, supporting coho, chum, cutthroat, and ESA-listed steelhead.</p>
-      <p><strong>Future plans</strong> for the property include providing affordable farm leases for beginning and underserved farmers and an opportunity to extend the trail northward from here to Kegley Road, further connecting communities across central and north Kitsap.</p>
+      <p><strong>Future plans</strong> for the property include providing affordable farm leases for beginning and underserved farmers, restoring Clear Creek, and providing opportunities for the community to engage with the farm.</p>
     `,
     tip: 'The open pasture edges are excellent for raptors. American kestrels hover over the fields hunting rodents in fall and winter.'
   },
@@ -483,6 +483,20 @@ const TOUR_STOPS = [
       <p>The paved trail heading south from this trailhead is fully accessible for wheelchairs and strollers for approximately <strong>2.1 miles</strong>.</p>
     `,
     tip: 'Parking fills quickly on sunny weekends — try to arrive early or use the Old Mill Park trailhead to the south as an alternative.'
+  },
+
+   {
+    id: 'hospital-spur',
+    title: 'St. Michael Medical Center Spur Trail',
+    category: 'future',
+    lat: 47.65681740835299,   // ⚠️ placeholder — update to the actual spur trail junction
+    lng: -122.67308956949866, // ⚠️ placeholder — update to the actual spur trail junction
+    photos: [{ src: 'assets/hospital.jpg', caption: 'The hospital-maintained spur trail links St. Michael Medical Center directly to Clear Creek Trail.' }],
+    body: `
+      <p>This spur trail connects <strong>St. Michael Medical Center</strong> directly to the Clear Creek Trail, giving hospital staff and patients easy access to nature just steps from the building. The segment is maintained by the hospital facilities team providing a nearby escape for people during what can be one of the most stressful times in their lives.</p>
+      <p>A short walk along the creek, surrounded by trees rather than hospital walls, can offer real relief for the many people who work and heal here every day.</p>
+    `,
+
   },
 
 ];

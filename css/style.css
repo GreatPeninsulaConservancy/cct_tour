@@ -391,6 +391,26 @@ a:hover { text-decoration: underline; }
   background: var(--bay-blue-lt) !important;
 }
 
+/* Popups used by amenity markers (see addPOIMarker in app.js) —
+   styled to match the rest of the map chrome above rather than
+   left as Leaflet's plain default. */
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius-md) !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.25) !important;
+}
+.leaflet-popup-content {
+  font-family: var(--font-body) !important;
+  font-size: 0.85rem !important;
+  line-height: 1.55 !important;
+  color: var(--text-dark) !important;
+  margin: 12px 16px !important;
+}
+.leaflet-popup-content strong {
+  font-family: var(--font-head) !important;
+  color: var(--bay-blue-dk) !important;
+}
+.leaflet-popup-tip-container { display: block !important; }
+
 /* ---------- Stop Markers — teardrop shape, colored by category ----------
    Marker background color is set inline per-stop in app.js (addStopMarker),
    using the color defined for that stop's category in js/tour-data.js. */
@@ -726,11 +746,13 @@ a:hover { text-decoration: underline; }
   border: none;
   cursor: pointer;
   text-align: left;
+  text-decoration: none; /* keeps <a>-based menu items (e.g. Get Involved) visually consistent with <button>-based ones */
   transition: background var(--transition);
   font-family: var(--font-body);
 }
 .menu-item:hover {
   background: rgba(0,101,150,0.07);
+  text-decoration: none;
 }
 .menu-item:active {
   background: rgba(0,101,150,0.14);
@@ -816,7 +838,12 @@ a:hover { text-decoration: underline; }
 
 /* ============================================================
    MAP LEGEND
-   ============================================================ */
+   ============================================================
+   One combined legend covering both narrative tour-stop categories
+   (teardrop dots, matching the map markers) and trail amenities
+   (circular dots, also matching their map markers) — collapsible via
+   the header button so it doesn't permanently take up map space,
+   especially on small screens. See addLegend() in app.js. */
 .map-legend {
   background: rgba(255,255,255,0.95);
   border-radius: var(--radius-md);
@@ -825,6 +852,64 @@ a:hover { text-decoration: underline; }
   border: 1px solid rgba(0,0,0,0.08);
   min-width: 190px;
 }
+
+.legend-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 0 8px;
+  font-family: var(--font-head);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bay-blue-dk);
+}
+.map-legend.collapsed .legend-toggle {
+  padding-bottom: 0;
+}
+
+.legend-chevron {
+  width: 14px; height: 14px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+.map-legend.collapsed .legend-chevron {
+  transform: rotate(-90deg);
+}
+
+.legend-body {
+  max-height: 480px;
+  overflow: hidden;
+  opacity: 1;
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+.map-legend.collapsed .legend-body {
+  max-height: 0;
+  opacity: 0;
+}
+
+.legend-divider {
+  height: 1px;
+  background: rgba(0,0,0,0.08);
+  margin: 6px 0;
+}
+
+.legend-section-label {
+  font-family: var(--font-head);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 2px 0 4px;
+}
+
 .legend-item {
   display: flex;
   align-items: center;
@@ -836,6 +921,8 @@ a:hover { text-decoration: underline; }
   padding-bottom: 6px;
   margin-bottom: 2px;
 }
+
+/* Teardrop dot — matches narrative tour-stop markers */
 .legend-dot {
   width: 28px; height: 28px;
   border-radius: 50% 50% 50% 4px;
@@ -851,12 +938,58 @@ a:hover { text-decoration: underline; }
   stroke: #fff;
   color: #fff;
 }
+
+/* Circular dot — matches amenity (POI) markers */
+.legend-dot-circle {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--gpc-white);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  border: 2px solid currentColor;
+}
+.legend-dot-circle svg {
+  width: 12px; height: 12px;
+}
+
 .legend-label {
   font-family: var(--font-head);
   font-size: 0.72rem;
   font-weight: 500;
   color: var(--text-dark);
   line-height: 1.2;
+}
+
+/* ============================================================
+   AMENITY MARKERS (parking/trailheads, restrooms, kiosks)
+   ============================================================
+   Deliberately circular rather than the teardrop shape used for
+   narrative tour stops (see "Stop Markers" above) — this makes it
+   immediately clear, at a glance, that these are quick-reference
+   amenity points rather than "tap to read about this place" stops.
+   Color and icon are set inline per-point in app.js (addPOIMarkers),
+   driven by POI_TYPES in js/points-data.js. */
+.poi-marker { background: transparent !important; border: none !important; }
+
+.poi-marker-inner {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--gpc-white);
+  border: 2px solid currentColor;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.poi-marker-inner svg {
+  width: 14px; height: 14px;
+  flex-shrink: 0;
+}
+
+.poi-marker:hover .poi-marker-inner {
+  transform: scale(1.15);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.4);
 }
 
 /* ============================================================
