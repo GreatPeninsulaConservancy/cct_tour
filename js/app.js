@@ -197,8 +197,7 @@ function addLegend() {
       </button>
       <div class="legend-body">
         ${categoryItems}
-        <div class="legend-divider"></div>
-        <div class="legend-section-label">Trail Amenities</div>
+        
         ${poiItems}
       </div>
     `;
